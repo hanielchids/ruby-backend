@@ -6,7 +6,17 @@ class UsersController < ApplicationController
 
 
     def create
-        user = User.new(user_params)
+
+        # user = User.new(user_params)
+
+        user = User.find_by(email: user_params[:email])
+
+        if user && user.authenticate(user_params[:password])
+            token = issue_token(user)
+            render json: { user: UserSerializer.new(user), jwt: token }
+        else
+            # Authentication failed
+            render json: { error: "Invalid email or password." }, status: :unauthorized
 
         if user.save
             token = issue_token(user)
