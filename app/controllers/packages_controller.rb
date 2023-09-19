@@ -18,6 +18,32 @@ class PackagesController < ApplicationController
         end
     end
 
+    def index
+        packages = Package.all
+        render json: packages
+    end    
+
+    def update
+        package = Package.find(params[:id])
+
+        if package.update(package_params)
+          render json: package
+        else
+        render json: { error: "Package could not be updated. Please try again." }
+        end
+    end
+
+    def destroy
+        package = Package.find(params[:id])
+
+        if package.destroy
+        render json: { message: "Package deleted successfully" }
+        else
+        render json: { error: "Package could not be deleted" }
+        end
+    end
+
+
     private
 
     def package_params
